@@ -1,0 +1,72 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
+\usepackage{natbib}      % http://merkel.zoneo.net/Latex/natbib.php
+\usepackage{palatino}
+\bibpunct{(}{)}{;}{a}{,}{,}
+\usepackage{chngpage}
+\usepackage{stmaryrd}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{lscape}
+\usepackage{subfigure}
+\usepackage[usenames,dvipsnames]{color}
+\definecolor{myblue}{rgb}{0,0.1,0.6}
+\definecolor{mygreen}{rgb}{0,0.3,0.1}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=mygreen,urlcolor=myblue]{hyperref}
+\newcommand{\bocomment}[1]{\textcolor{Bittersweet}{[#1 -BTO]}}
+\newenvironment{itemizesquish}{\begin{list}{\labelitemi}{\setlength{\itemsep}{0em}\setlength{\labelwidth}{2em}\setlength{\leftmargin}{\labelwidth}\addtolength{\leftmargin}{\labelsep}}}{\end{list}}
+\newcommand{\ignore}[1]{}
+\newcommand{\transpose}{^\mathsf{T}}
+\newcommand{\inner}[1]{\langle #1 \rangle}
+\newcommand{\smallsec}[1]{\noindent \textbf{#1\ }}
+
+\newcommand{\solution}[1]{{\color{Blue}[\textbf{Solution:} #1]}}
+% \newcommand{\solution}[1]{}
+\theoremstyle{definition}
+\newtheorem{question}{Question}[section]
+% \newtheorem{question}{Question}
+
+\title{
+Formal properties of word pair correlations
+}
+
+\author{
+}
+
+%\date{December 9, 2009}
+
+\begin{document}
+\maketitle
+
+\section{Definition}
+
+The ``word pair correlation function'' can be defined for a single wordtype, or across all words.
+
+Across all words, define it as the probability a pair of tokens, spaced $r$ distance apart, are the same word.  So if you picked a position $t$ at random, what's the chance the same word is at $t+r$?  This is:
+
+\[ g(r) = p(w_t = w_{t+r}) \]
+
+Consider the case $r=1$.  This can be rewritten in a history conditional form as follows.
+
+\begin{align}
+g(r) &= p(w_t=w_{t+1}) \\
+&= \sum_v p(w_t=v,\ w_{t+1}=v)  \label{e:introduce-v} \\
+&= \sum_v p(w_{t+1}=v \mid w_t=v)\ p(w_t=v) \label{e:condprob}
+\end{align}
+
+Step \ref{e:introduce-v} decomposes the probability into the sum over all words that are possible.  Step \ref{e:condprob} is definition of conditional probability.
+
+To do:
+\begin{enumerate}
+\item Derive $g(r)$ under a zeroth-order (independent unigrams) assumption.
+\item Derive $g(r=1)$ under a first-order (bigram model) assumption.
+\item Derive $g(r)$ under a first-order model.
+\item Derive $g(r)$ under an arbitrary order model .. or maybe just second order, that sounds easier.
+\end{enumerate}
+
+
+% \bibliographystyle{plainnat}
+% \bibliography{brenocon}
+\end{document}
