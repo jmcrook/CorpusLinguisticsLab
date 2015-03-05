@@ -44,15 +44,29 @@ Formal properties of word pair correlations
 
 The ``word pair correlation function'' can be defined for a single wordtype, or across all words.
 
-Across all words, define it as the probability a pair of tokens, spaced $r$ distance apart, are the same word.  So if you picked a position $t$ at random, what's the chance the same word is at $t+r$?  This is:
+Across all words, let's define it as the probability a pair of tokens, spaced $r$ distance apart, are the same word.  So if you picked a position $t$ at random, what's the chance the same word is at $t+r$?  (Restriction: you sample $t$ only from positions $\{1..N-r\}$ where $N$ is the number of tokens in the corpus.)  This is:
 
-\[ g(r) = p(w_t = w_{t+r}) \]
+\[ g(r) = p(w_{t+r} = w_{t}) \]
 
-Consider the case $r=1$.  This can be rewritten in a history conditional form as follows.
+For a specific word $v$, there are two possible ways to define it.  We should standardize on one.
+\[ g_{cond}(r,v) = p(w_{t+r} = v \mid  w_t = v) \]
+versus
+\[ g_{joint}(r,v) = p(w_{t+r} = v,\ w_t = v) \]
+the joint version (the latter) has much smaller numerical values than the first, and they're especially smaller for rare words.  Perhaps that is an argument the conditional form is easier to interpret.
+
+Finally, this could be defined for a set of words --- for example, to analyze a single paircorr function curve for all names, or all verbs, etc.
+Let the set of words be $A$.  Here's a proposal:
+\[ g(r,A) = p(w_{t+r} \in A \mid w_t \in A) \]
+this is equivalent to rewriting all words in the set $A$ to a special symbol, and computing the word paircorr for that symbol (specifically $g_{cond}$).
+
+
+\section{Pair correlation under Markov models}
+
+Consider the case $r=1$.  $g(r)$ can be rewritten in a history conditional form as follows.
 
 \begin{align}
-g(r) &= p(w_t=w_{t+1}) \\
-&= \sum_v p(w_t=v,\ w_{t+1}=v)  \label{e:introduce-v} \\
+g(r) &= p(w_{t+1}=w_{t}) \\
+&= \sum_v p(w_{t+1}=v,\ w_{t}=v)  \label{e:introduce-v} \\
 &= \sum_v p(w_{t+1}=v \mid w_t=v)\ p(w_t=v) \label{e:condprob}
 \end{align}
 
@@ -65,6 +79,8 @@ To do:
 \item Derive $g(r)$ under a first-order model.
 \item Derive $g(r)$ under an arbitrary order model .. or maybe just second order, that sounds easier.
 \end{enumerate}
+
+A more minor todo: need to change the name away from ``pair correlation function'', because that has a \emph{very} different meaning in statistics.
 
 
 % \bibliographystyle{plainnat}
