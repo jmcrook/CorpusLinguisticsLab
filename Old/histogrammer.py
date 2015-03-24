@@ -5,6 +5,7 @@ import pylab as pl
 
 num_bins = 1000
 
+
 def make_word_list(filepath):  # turns text file into all lower-case, all alphabetical characters, words split by ' '.
 
     txt_file = open(filepath, 'r')
