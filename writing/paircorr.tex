@@ -72,10 +72,45 @@ g(1) &= p(w_{t+1}=w_{t}) \\
 
 Step \ref{e:introduce-v} decomposes the probability into the sum over all words that are possible.  Step \ref{e:condprob} is definition of conditional probability.
 
+
+A zeroth order (independent unigrams) assumption yields the following equivalency:
+\[p(w_{t+1}=v \mid w_t=v) = p(w_{t+1}=v) = p(w_{t}=v)\]
+With this, we can simplify step \ref{e:condprob} and fully derive $g(r)$ under the zeroth order assumption.
+
+\begin{align}
+&\sum_v p(w_{t+1}=v \mid w_t=v)\ p(w_t=v) \\
+= &\sum_v p(w_{t+1}=v)\ p(w_t=v)\\
+= &\sum_v [p(w_{t}=v)]^2  \\
+= &g(r) 
+\end{align}
+
+Now let's consider a first-order (bigram) model. For $r=1$, $g(r)$ is already defined for each word type. So:
+\[p(w_{t+1} = w_{t}) =  \sum_v p(w_{t+1} = v \mid w_{t} = v)\]
+
+
+\[p(w_{t+2} = w_{t}) =  \sum_v p(w_{t+2} = v , w_{t} = v) * p(w_{t} = v) \]
+
+\begin{align}
+&   p(w_{t+2} = v , w_{t} = v)\\
+=& p(w_{t+2} = v  \mid w_{t} = v)\\
+=& \sum_u p(w_{t+2} = v , p(w_{t+1} = u \mid w_{t} = v)\\
+=& \sum_u p(w_{t+2} = v \mid p(w_{t+1} = u , w_{t} = v) * p(w_{t+1} = u \mid w_{t} = v)\\
+=& \sum_u p(w_{t+2} = v \mid p(w_{t+1} = u ) * p(w_{t+1} = u \mid w_{t} = v)
+\end{align}
+
+\[ \sum_v p(w_{t+2} = v  \mid w_{t} = v)\]
+\[ \sum_v p(w_{t+2} = v , p(w_{t+1} = v \mid w_{t} = v)\]
+
+
+
+
+
+
+
+
+
 To do:
 \begin{enumerate}
-\item Derive $g(r)$ under a zeroth-order (independent unigrams) assumption.
-\item Derive $g(r=1)$ under a first-order (bigram model) assumption.
 \item Derive $g(r)$ under a first-order model.
 \item Derive $g(r)$ under an arbitrary order model .. or maybe just second order, that sounds easier.
 \end{enumerate}
@@ -83,4 +118,5 @@ To do:
 
 % \bibliographystyle{plainnat}
 % \bibliography{brenocon}
+
 \end{document}
