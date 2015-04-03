@@ -84,23 +84,37 @@ With this, we can simplify step \ref{e:condprob} and fully derive $g(r)$ under t
 = &g(r) 
 \end{align}
 
-Now let's consider a first-order (bigram) model. For $r=1$, $g(r)$ is already defined for each word type. So:
-\[p(w_{t+1} = w_{t}) =  \sum_v p(w_{t+1} = v \mid w_{t} = v)\]
-
-
-\[p(w_{t+2} = w_{t}) =  \sum_v p(w_{t+2} = v , w_{t} = v) * p(w_{t} = v) \]
-
+Let's consider a first-order (bigram) model. For $r=1$, $g(r)$ is already defined for each word type, by definition of a first-order model. So:
 \begin{align}
-&   p(w_{t+2} = v , w_{t} = v)\\
-=& p(w_{t+2} = v  \mid w_{t} = v)\\
-=& \sum_u p(w_{t+2} = v , p(w_{t+1} = u \mid w_{t} = v)\\
-=& \sum_u p(w_{t+2} = v \mid p(w_{t+1} = u , w_{t} = v) * p(w_{t+1} = u \mid w_{t} = v)\\
-=& \sum_u p(w_{t+2} = v \mid p(w_{t+1} = u ) * p(w_{t+1} = u \mid w_{t} = v)
+p(w_{t+1} = w_{t}) &=  \sum_v p(w_{t+1} = v \mid w_{t} = v)\\
+p(w_{t+2} = w_{t}) &=  \sum_v p(w_{t+2} = v , w_{t} = v) * p(w_{t} = v) \label{e:sumv}
 \end{align}
 
-\[ \sum_v p(w_{t+2} = v  \mid w_{t} = v)\]
-\[ \sum_v p(w_{t+2} = v , p(w_{t+1} = v \mid w_{t} = v)\]
+ Now, the first probability under summation in the previous line, $p(w_{t+2} = v , w_{t} = v)$ can be derived as follows:
 
+\begin{align}
+  &p(w_{t+2} = v , w_{t} = v)\\
+= &p(w_{t+2} = v  \mid w_{t} = v)\\
+= \sum_u &p(w_{t+2} = v , w_{t+1} = u \mid w_{t} = v)\\
+= \sum_u &p(w_{t+2} = v \mid w_{t+1} = u , w_{t} = v) * p(w_{t+1} = u \mid w_{t} = v)\\
+= \sum_u &p(w_{t+2} = v \mid w_{t+1} = u ) * p(w_{t+1} = u \mid w_{t} = v) \label{e:sumu}
+\end{align}
+
+When we combine \ref{e:sum} with \ref{e:sumv}, we get $g(2)$ under a first order model:
+
+
+\[ \sum_v [\sum_u p(w_{t+2} = v \mid w_{t+1} = u ) * p(w_{t+1} = u \mid w_{t} = v)] * p(w_{t} = v) \]
+
+Without applying any new principles, this expression can be extended to $r = 3$:
+
+
+\[ \sum_v [\sum_u [\sum_q [p(w_{t+3} = v \mid w_{t+2} = q ) * p(w_{t+2} = q \mid w_{t+1} = u)] p(w_{t+1} = u \mid w_{t} = v) ] p(w_{t} = v) \]
+
+and all other $r$ (with a slight change in notation):
+
+\begin{align} g(r) &= \sum_{v_0}[ \sum_{v_1} [ ... [ \sum_{v_{r-1}} [ p(w_{t+r} = v_0 \mid w_{t+r-1} = v_{r-1}) p(w_{t+r-1} = v_{r-1} \mid w_{t+r-2} = v_{r-2})] \\
+&* p(w_{t+r-2} = v_{r-2} \mid w_{t+r-3} = v_{r-3})] p(w_{t+r-3} = v_{r-3} \mid w_{t+r-4} = v_{r-4})] ... ] p(w_t = v_0) 
+\end{align}
 
 
 
