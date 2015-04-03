@@ -31,7 +31,7 @@ def make_word_list(filepath):  # normalizes a txt
 
     return word_list
 
-full_list = make_word_list('/Users/jmcrook/Desktop/Txt/MBDK.txt')  # Moby Dick
+full_list = make_word_list('/Users/jmcrook/Desktop/Txt/MBDK.txt')  # a text file of Moby Dick on my desktop
 
 
 def unigram_modeler(txt): # txt must be word list
@@ -88,15 +88,15 @@ def fourgram_modeler(txt2): # doesn't work
     return fourgram
 
 
-def bigram_modeler3(txt3, model_len):  # tuples!
+def bigram_modeler2(txt3, model_len):  # uses tuples, weighted draw from dictionary method
+                                       # faster than bigram_modeler for large corpora
 
     bigram_counts = {}
     draw_dicts = {}
     t1 = time.time()
 
     for t in range(len(txt3)-1):
-
-        print float(t)/len(txt3)
+     #   print float(t)/len(txt3)
 
         if tuple(txt3[t:t+2]) not in bigram_counts:
             bigram_counts[tuple(txt3[t:t+2])] = 1
@@ -106,28 +106,14 @@ def bigram_modeler3(txt3, model_len):  # tuples!
     model3 = [txt3[randint(0, len(txt3)-1)]]
 
     for b in range(model_len):
-        print b/float(model_len), "\n"
+     #   print b/float(model_len), "\n"
         if model3[b] not in draw_dicts:
             draw_dict = {k: v for k, v in bigram_counts.items() if k[0] == model3[b]}
             model3.append(weighted_draw_from_dict(draw_dict))
             draw_dicts[model3[b]] = draw_dict
 # this if statement makes it so the modeler doesn't have to rebuild draw_dict for words it's seen before
-
         else:
             model3.append(weighted_draw_from_dict(draw_dicts[model3[b]]))
-
-         # OR
-            """
-
-    for W in set(txt3):
-        draw_dicts[W] = {k: v for k, v in bigram_counts.items() if k[0] == W}
-        print len(draw_dicts)/float(len(txt3))
-
-    for b in range(model_len):
-        print len(draw_dicts)  # b/float(model_len)
-        model3.append(weighted_draw_from_dict(draw_dicts[model3[b]]))
-        """
-
     t2 = time.time()
 
     return model3, t2-t1
@@ -151,7 +137,7 @@ def weighted_draw_from_dict(choice_dict):
     assert False, "Shouldn't get here"
 
 
-def get_pair_corr_fast(w_lst3):
+def get_pair_corr_fast(w_lst3): # returns the pair correlation function for all words
 
     s1 = time.time()
     pair_corr_spacings = []
@@ -170,9 +156,9 @@ def get_pair_corr_fast(w_lst3):
     return np.histogram(pair_corr_spacings, bins=range(SCAN_WIDTH+2), density=True)  # the +2 is because the we're
                                                                                    # defining the rightmost bin edge
 
-# print bigram_modeler3(full_list[:2000])
+#print bigram_modeler2(full_list[:2000])
 
-p_model, model_time = bigram_modeler3(full_list, 1000000)
+p_model, model_time = bigram_modeler2(full_list, 1000000)
 pair_corr = get_pair_corr_fast(p_model)
 
 print(pair_corr)
