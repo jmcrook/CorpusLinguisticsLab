@@ -1,9 +1,12 @@
 import nltk
 import numpy as np
 import pylab as pl
-## from nltk.book import *
+from nltk.corpus import brown, stopwords
 
-SCAN_WIDTH = 12
+
+SCAN_WIDTH = 20
+
+conj = ['and', 'or', 'but', 'for', 'nor', 'yet', 'so']
 
 
 def make_word_list(filepath):  # normalizes a txt
@@ -47,18 +50,51 @@ def get_pair_corr_fast(w_lst3):
     return np.histogram(pair_corr_spacings, bins=range(SCAN_WIDTH+2), density=True)  # the +2 is because the we're
                                                                                      # defining the rightmost bin edge
 
+def word_set_pair_corr(w_lst, type_list):
+
+    pair_corr_spacings = []
+
+    length = len(w_lst)
+
+    for w in range(SCAN_WIDTH, len(w_lst)-SCAN_WIDTH):
+        #print float(w)/length
+        for p in range(w-SCAN_WIDTH, w + SCAN_WIDTH + 1):
+            if w != p:
+                if w_lst[w] in type_list and w_lst[p] in type_list:
+                    if w_lst[w] == w_lst[p]:
+                        pair_corr_spacings.append(abs(w-p))
+
+    return np.histogram(pair_corr_spacings, bins=range(SCAN_WIDTH+2), density=True)  # the +2 is because the we're
+                                                                                     # defining the rightmost bin edge
+
 
 full_list = make_word_list('/Users/jmcrook/Desktop/Txt/MBDK.txt')  # Moby Dick
 
-pair_corr = get_pair_corr_fast(full_list)
+#'/Users/jmcrook/Desktop/Txt/MBDK.txt'
 
-y1 = [y for y in pair_corr[0]]
-x1 = [int(x) for x in pair_corr[1][:-1]]
+pair_corr1 = get_pair_corr_fast(full_list[:len(full_list)/2])
+
+pair_corr2 = get_pair_corr_fast(full_list[len(full_list)/2:])
+
+
+print "first half of MBDK"
+print pair_corr1
+
+print "second half of MBDK"
+print pair_corr2
+
+y1 = [y for y in pair_corr1[0]]
+x1 = [int(x) for x in pair_corr1[1][:-1]]
+
+y2 = [y for y in pair_corr2[0]]
+x2 = [int(x) for x in pair_corr2[1][:-1]]
 
 
 pl.plot(x1, y1)
 pl.show()
 
+pl.plot(x2, y2)
+pl.show()
 
 
 

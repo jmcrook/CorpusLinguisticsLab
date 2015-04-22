@@ -7,7 +7,7 @@ from nltk.util import *
 txt = [l for l in text1 if l.isalpha()]
 
 bigram_probdist = ConditionalProbDist(
-    ConditionalFreqDist(FreqDist(bigrams(txt))), ELEProbDist)
+    ConditionalFreqDist(FreqDist(bigrams(txt))), MLEProbDist)
 
 
 "g(1)"
