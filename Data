@@ -28,6 +28,8 @@ It took 32 seconds to build the model and 212 seconds to run the pairwise analys
  array([ 0.        ,  0.06688546,  0.06654094,  0.06685901,  0.06637296, 0.06680112,  0.06645516,  0.06653129,  0.06674108,  0.06693264, 0.06663672,  0.06641442,  0.06687474,  0.06644373,  0.06648018, 0.06703056])
  array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16])
 
+ the value for this is just 1/15, i.e. 1/(scan width), because this is a probability density of a uniform distribution.
+
 
 Moby Dick, bigram language model pair correlation function (model length = 1,000,000)
 
