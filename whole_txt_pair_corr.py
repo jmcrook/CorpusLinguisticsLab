@@ -3,9 +3,10 @@ import numpy as np
 #import pylab as pl
 from nltk.probability import *
 from nltk.corpus import brown, stopwords
+from nltk.book import *
 
 
-SCAN_WIDTH = 15
+SCAN_WIDTH = 12
 
 
 
@@ -22,11 +23,11 @@ NPron = ['he', 'she', 'it', 'they', 'we', 'i', 'you']
 APron = ['him', 'her', 'you', 'it', 'us', 'them', 'me']
 
 
-def make_word_list(filepath):  # normalizes a txt
+def make_word_list(wordlst):  # normalizes a txt
 
-    txt_file = open(filepath, 'r')
-    txt = txt_file.read()
-    #txt = ' '.join(wordlst)  # if input is a list
+    #txt_file = open(filepath, 'r')
+    #txt = txt_file.read()
+    txt = ' '.join(wordlst)  # if input is a list
 
     txt_chars = []
     for c in txt:
@@ -49,8 +50,6 @@ def make_word_list(filepath):  # normalizes a txt
 
 def get_pair_corr_fast(w_lst3, density):
 
-
-
     pair_corr_spacings = []
 
     for w in range(len(w_lst3)-SCAN_WIDTH):
@@ -58,7 +57,7 @@ def get_pair_corr_fast(w_lst3, density):
             if w_lst3[w] == w_lst3[p]:
                 pair_corr_spacings.append(abs(w-p))
 
-    hist = [0 for i in range(SCAN_WIDTH)]
+    hist = [0 for i in range(SCAN_WIDTH+1)]
     for i in range(1, SCAN_WIDTH):
         for s in pair_corr_spacings:
             if s == i:
@@ -70,7 +69,7 @@ def get_pair_corr_fast(w_lst3, density):
         return hist
 
 
-def word_set_pair_corr_p(w_lst, type_list): #particularized
+def word_set_pair_corr_p(w_lst, type_list): #set-exclusive
 
     pair_corr_spacings = []
 
@@ -90,7 +89,7 @@ def word_set_pair_corr_p(w_lst, type_list): #particularized
     return hist
 
 
-def word_set_pair_corr_g(w_lst, type_list): #generalized
+def word_set_pair_corr_g(w_lst, type_list): #set-inclusive
 
     pair_corr_spacings = []
 
@@ -145,36 +144,15 @@ def get_word_most_common_space(w_lst, word):
 
     return FreqDist(spacings).most_common(1)[0][0]
 
-def get_spacing_density(w_lst):
-
-    spacings = []
-
-    indices = []
-
-    length = len(w_lst)
-
-    for w in range(length-SCAN_WIDTH):
-        for p in range(w+1, w + SCAN_WIDTH + 1):
-            if w_lst[w] == w_lst[p]:
-                indices.append((w, p))
-    print 2
-
-    indlen = len(indices)
-
-    for i in range(len(indices)):
-        inner = True
-        for d in range(i+1, len(indices)):
-            if indices[i][1] > indices[d][1]:
-                inner = False
-                break
-        if inner:
-            spacings.append(indices[i][1] - indices[i][0])
-
-    return FreqDist(spacings).most_common(30), spacings
-
 
 # END OF METHODS
 
+books = ['austen-emma.txt', 'austen-persuasion.txt', 'austen-sense.txt',
+         'carroll-alice.txt', 'edgeworth-parents.txt',
+         'milton-paradise.txt', 'shakespeare-caesar.txt', 'shakespeare-hamlet.txt']
+
+for b in books:
+    print b + "," + str(get_pair_corr_fast(make_word_list(gutenberg.words(b)), True))[1:-1]
 
 
 
