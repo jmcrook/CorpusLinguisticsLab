@@ -3,7 +3,7 @@ __author__ = 'jmcrook'
 import nltk
 from nltk.probability import *
 from nltk.util import bigrams
-
+#from nltk.book import text1
 
 def make_word_list(filepath):  # normalizes a txt
 
@@ -29,8 +29,9 @@ def make_word_list(filepath):  # normalizes a txt
 
     return word_list
 
-MobyDick = make_word_list('/Users/jmcrook/Desktop/Txt/MBDK.txt')  # Moby Dick
+#MobyDick = make_word_list('/Users/macadmin/PycharmProjects/spring15/Spring15-master/MBDK_clean.txt')  # Moby Dick
 
+MobyDick = (open('/Users/macadmin/PycharmProjects/spring15/Spring15-master/MBDK_clean.txt', "r").read()).split(' ')
 
 #### unigram model of moby dick
 
@@ -44,30 +45,30 @@ print sum([(MDProb.prob(c) ** 2) for c in set(MobyDick)])
 #### Bigram model
 
 
-def bigram_g(book):
+v = sorted(set(MobyDick))
+word_dist = MLEProbDist(FreqDist(MobyDick))
+bigram_dist = ConditionalProbDist(ConditionalFreqDist(bigrams(MobyDick)), MLEProbDist)
 
-    v = sorted(set(book))
-    word_dist = MLEProbDist(FreqDist(book))
-    bigram_dist = ConditionalProbDist(ConditionalFreqDist(bigrams(MobyDick)), MLEProbDist)
+r_1 = sum([bigram_dist[C].prob(C) * word_dist.prob(C) for C in v])
 
-    r_1 = sum([bigram_dist[C].prob(C) * word_dist.prob(C) for C in v])
+r_2 = 0
 
-    r_2 = 0
-    
-    for w in v:
-        for b in v:
-            r_2 += bigram_dist[b].prob(w) * bigram_dist[w].prob(b) * word_dist.prob(w)
+for w in v:
+    print w
+    for b in v:
+        r_2 += bigram_dist[b].prob(w) * bigram_dist[w].prob(b) * word_dist.prob(w)
 
-    r_3 = 0
 
-    for w in v:
-        for b in v:
-            for d in v:
-                r_3 += bigram_dist[d].prob(w) * bigram_dist[b].prob(d) * bigram_dist[w].prob(b) * word_dist.prob(w)
+r_3 = 0
 
-    print r_1, r_2, r_3
+#for w in v:
+#    for b in v:
+#        for d in v:
+#            r_3 += bigram_dist[d].prob(w) * bigram_dist[b].prob(d) * bigram_dist[w].prob(b) * word_dist.prob(w)
 
-bigram_g(MobyDick)
+print r_1, r_2, r_3
+
+
 
 
 

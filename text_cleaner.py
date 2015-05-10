@@ -2,7 +2,6 @@ __author__ = 'jmcrook'
 
 import nltk
 
-
 def make_word_list(filepath):  # normalizes a txt
 
     txt_file = open(filepath, 'r')
@@ -27,11 +26,49 @@ def make_word_list(filepath):  # normalizes a txt
 
     return word_list
 
-MD = open('MBDK_clean.txt', 'w')
-
-MDB = make_word_list('/Users/jmcrook/Desktop/Txt/MBDK.txt')
-
-for w in MDB:
-    MD.write(w+' ')
 
 
+chaps = open('/Users/macadmin/PycharmProjects/spring15/Spring15-master/chapters', 'r')
+MobyDick = (open('/Users/macadmin/PycharmProjects/spring15/Spring15-master/MBDK_clean.txt', "r").read()).split(' ')
+
+
+chapters = []
+
+contents = []
+
+for l in chaps.readlines():
+    string = ''
+    for c in l:
+        if c.isalpha() or c == ' ':
+            string += c.lower()
+    chapters.append(string)
+
+for P in chapters:
+    print P
+
+
+for i in range(len(MobyDick)):
+    if MobyDick[i] == 'chapter':
+        name = ''.join(MobyDick[i:i+17])
+        for f in chapters:
+            if name.startswith(f.replace(' ', '')):
+                contents.append((f, i))
+
+print contents
+
+
+"""
+('chapter loomings', 0)
+('chapter the spouter inn', 3703)
+('chapter the counterpane', 9707)
+('chapter breakfast', 11384)
+('chapter the street', 12138)
+('chapter the pulpit', 13920)
+('chapter the sermon', 14891)
+('chapter a bosom friend', 18536)
+('chapter nightgown', 20107)
+('chapter biographical', 20841)
+('chapter wheelbarrow', 21733)
+...
+
+"""

@@ -40,9 +40,19 @@ Formal properties of word pair correlations
 \begin{document}
 \maketitle
 
-\section{Definition}
+\section{Introduction}
 
-The ``word pair correlation function'' can be defined for a single wordtype, or across all words.
+The idea for this project came when I first heard about a (supposedly) famous mathematical conjecture known as the Gaussian Unitary Ensemble Hypothesis. The essential claim of the GUE hypothesis is that the relative spacings of eigenvalues of a very large random matrix of a certain type (that is, a Gaussian Unitary Ensemble) should resemble, or be underlying identical, to the relative spacings of zeros of the Riemann zeta function, which is used to predict prime numbers. 
+
+Since the 50s, this same particular spacing pattern has also been known to describe the scattering resonances of very heavy nuclei (though what exactly a scattering resonance is is not relevant to this project), and, recently, to describe several other phenomena that can be represented as events on a one-dimensional spectrum, such as birds resting on power lines, bus arrival times, and parallel parked cars. 
+
+This led me to wonder about the spacing of words, to see if they too could be described in this way. As it turns out, the technique used in the GUE hypothesis that allows for the quantitative description of one-dimensional spacing patterns is known as the pair correlation function, commonly written as g(r).
+
+The pair correlation function describes how the density of certain events, or, let's say, particles in solution, varies as a function of distance from a reference particle. To do this, $g(r)$ gives the probability of finding a particle at a distance $r$ from another particle. The formal, general definition of $g(r)$ restricts $r$ to continuous variables in any number of dimensions and involves some calculus. As a result, due to the discrete, combinatorial nature of language, a slightly altered interpretation of the pair correlation function is necessary.
+
+\section{Word Pair Correlation Function}
+
+The ``word pair correlation function'' can be defined for a single word type, or across all words.
 
 Across all words, let's define it as the probability a pair of tokens, spaced $r$ distance apart, are the same word.  So if you picked a position $t$ at random, what's the chance the same word is at $t+r$?  (Restriction: you sample $t$ only from positions $\{1..N-r\}$ where $N$ is the number of tokens in the corpus.)  This is:
 
@@ -52,13 +62,23 @@ For a specific word $v$, there are two possible ways to define it.  We should st
 \[ g_{cond}(r,v) = p(w_{t+r} = v \mid  w_t = v) \]
 versus
 \[ g_{joint}(r,v) = p(w_{t+r} = v,\ w_t = v) \]
-the joint version (the latter) has much smaller numerical values than the first, and they're especially smaller for rare words.  Perhaps that is an argument the conditional form is easier to interpret.
+the joint version (the latter) has much smaller numerical values than the first, and they're especially smaller for rare words. For this reason, we'll use the conditional version, as its values will be easier to interpret.
 
-Finally, this could be defined for a set of words --- for example, to analyze a single paircorr function curve for all names, or all verbs, etc.
-Let the set of words be $A$.  Here's a proposal:
+Finally, $g(r)$ could be defined for a set of words --- for example, to analyze a single paircorr function curve for all names, or all verbs, etc. In fact, the word set paircorr has two versions, a $set-inclusive$ version and a $set-exclusive$ version.
+
+Let the set of words be $A$. 
+For the set-inclusive version, the paircorr would look like this:
 \[ g(r,A) = p(w_{t+r} \in A \mid w_t \in A) \]
-this is equivalent to rewriting all words in the set $A$ to a special symbol, and computing the word paircorr for that symbol (specifically $g_{cond}$).
+This is equivalent to rewriting all words in the set $A$ to a special symbol, and computing the word paircorr for that symbol (specifically $g_{cond}$).
 
+For the set-exclusive version, the paircorr would look like this:
+\[ g(r) = p(w_{t+r} = w_{t} \mid w_t \in A)  \]
+This is equivalent to rewriting all words $not$ in the set $A$ to a special symbol, and ignoring that symbol when evaluating the pair correlation.
+
+
+\section{Pair Correlations of famous texts}
+
+Just to get an idea, 
 
 \section{Pair correlation under Markov models}
 

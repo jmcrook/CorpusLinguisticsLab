@@ -31,8 +31,9 @@ def make_word_list(filepath):  # normalizes a txt
 
     return word_list
 
-full_list = make_word_list('/Users/jmcrook/Desktop/Txt/MBDK.txt')  # a text file of Moby Dick on my desktop
+#full_list = make_word_list('/Users/jmcrook/Desktop/Txt/MBDK.txt')  # a text file of Moby Dick on my desktop
 
+MobyDick = (open('/Users/macadmin/PycharmProjects/spring15/Spring15-master/MBDK_clean.txt', "r").read()).split(' ')
 
 def unigram_modeler(txt): # txt must be word list
 
@@ -96,7 +97,7 @@ def bigram_modeler2(txt3, model_len):  # uses tuples, weighted draw from diction
     t1 = time.time()
 
     for t in range(len(txt3)-1):
-     #   print float(t)/len(txt3)
+        print float(t)/len(txt3)
 
         if tuple(txt3[t:t+2]) not in bigram_counts:
             bigram_counts[tuple(txt3[t:t+2])] = 1
@@ -106,9 +107,12 @@ def bigram_modeler2(txt3, model_len):  # uses tuples, weighted draw from diction
     model3 = [txt3[randint(0, len(txt3)-1)]]
 
     for b in range(model_len):
-     #   print b/float(model_len), "\n"
+        print b/float(model_len), "\n"
         if model3[b] not in draw_dicts:
-            draw_dict = {k: v for k, v in bigram_counts.items() if k[0] == model3[b]}
+            draw_dict = {}
+            for k, v in bigram_counts.items():
+                if k[0] == model3[b]:
+                    draw_dict[k] = v
             model3.append(weighted_draw_from_dict(draw_dict))
             draw_dicts[model3[b]] = draw_dict
 # this if statement makes it so the modeler doesn't have to rebuild draw_dict for words it's seen before
@@ -158,7 +162,7 @@ def get_pair_corr_fast(w_lst3): # returns the pair correlation function for all 
 
 #print bigram_modeler2(full_list[:2000])
 
-p_model, model_time = bigram_modeler2(full_list, 1000000)
+p_model, model_time = bigram_modeler2(MobyDick, 1000000)
 pair_corr = get_pair_corr_fast(p_model)
 
 print(pair_corr)
