@@ -57,27 +57,26 @@ The pair correlation function describes how the density of certain events, or, l
 
 The ``word pair correlation function'' can be defined for a single word type, or across all words.
 
-Across all words, let's define it as the probability a pair of tokens, spaced $r$ distance apart, are the same word.  So if you picked a position $t$ at random, what's the chance the same word is at $t+r$?  (Restriction: you sample $t$ only from positions $\{1..N-r\}$ where $N$ is the number of tokens in the corpus.)  This is:
+The all-word pair correlation is the likelihood that any two tokens spaced $r$ distance apart are the same word. In other words, if you picked a word $t$ at random, the pair correlation gives the likelihood that word $t+r$ is the same word. (Adjacent words have a spacing of 1.) This is:
 
 \[ g(r) = p(w_{t+r} = w_{t}) \]
 
-For a specific word $v$, there are two possible ways to define it.  We should standardize on one.
-\[ g_{cond}(r,v) = p(w_{t+r} = v \mid  w_t = v) \]
-versus
+For a specific word $v$, the pair correlation looks like this:
+\[ g(r,v) = p(w_{t+r} = v \mid  w_t = v) \]
+This is the conditional pair correlation, because it only considers the likelihood of encountering $v$ conditional on its earlier appearance. There is a joint version however:
 \[ g_{joint}(r,v) = p(w_{t+r} = v,\ w_t = v) \]
-the joint version (the latter) has much smaller numerical values than the first, and they're especially smaller for rare words. For this reason, when doing single word pair correlations, we'll use the conditional version, as its values will be easier to interpret.
+but this version has much smaller numerical values than the first, particularly for rare words. For this reason, we'll use the conditional version, as its values will be easier to interpret.
 
-Finally, $g(r)$ could be defined for a set of words --- for example, to analyze a single paircorr function curve for all names, or all verbs, etc. In fact, the word set paircorr has two versions, a $set-inclusive$ version and a $set-exclusive$ version.
+Finally, $g(r)$ could be defined for a set of words --- for example, to analyze a single paircorr function curve for all names, or all verbs, etc. In fact, the word set paircorr also has two versions, a $set-inclusive$ version and a $set-exclusive$ version.
 
 Let the set of words be $A$. 
 For the set-inclusive version, the paircorr would look like this:
 \[ g(r,A) = p(w_{t+r} \in A \mid w_t \in A) \]
-This is equivalent to rewriting all words in the set $A$ to a special symbol, and computing the word paircorr for that symbol (specifically $g_{cond}$).
+Think of this as rewriting all words $A$ to a special symbol, (like, for instance, a part of speech tag) and computing the word paircorr for that symbol.
 
 For the set-exclusive version, the paircorr would look like this:
 \[ g(r) = p(w_{t+r} = w_{t} \mid w_t \in A)  \]
-This is equivalent to rewriting all words $not$ in the set $A$ to a special symbol, and ignoring that symbol when evaluating the pair correlation.
-
+This is equivalent to rewriting all words $not$ in the set $A$ to a null symbol, and then taking the all-word pair correlation
 
 \section{Pair Correlations of Famous Texts}
 
@@ -118,30 +117,27 @@ Consider the case $r=1$.  $g(1)$ can be rewritten in a history conditional form 
 
 \begin{align}
 g(1) &= p(w_{t+1}=w_{t}) \\
-&= \sum_v p(w_{t+1}=v,\ w_{t}=v)  \label{e:introduce-v} \\
-&= \sum_v p(w_{t+1}=v \mid w_t=v)\ p(w_t = v) \label{e:condprob}
+&= \sum_v p(w_{t+1}=v \mid w_{t}=v)  \label{e:introduce-v} \\
 \end{align}
-
-Step \ref{e:introduce-v} decomposes the probability into the sum over all words that are possible.  Step \ref{e:condprob} is definition of conditional probability.
-
+Step \ref{e:introduce-v} decomposes the probability into the sum over all words that are possible.  
 
 A zeroth order (independent unigrams) assumption yields the following equivalency:
 \[p(w_{t+1}=v \mid w_t=v) = p(w_{t+1}=v) = p(w_{t}=v)\]
 With this, we can simplify step \ref{e:condprob} and fully derive $g(r)$ under the zeroth order assumption.
 
 \begin{align}
-&\sum_v p(w_{t+1}=v \mid w_t=v)\ p(w_t=v) \\
-= &\sum_v p(w_{t+1}=v)\ p(w_t=v)\\
-= &\sum_v [p(w_{t}=v)]^2  \\
+&\sum_v p(w_{t+1}=v \mid w_t=v)\\
+= &\sum_v p(w_{t+1}=v)\\
+= &\sum_v p(w_{t}=v)  \\
 = &g(r) 
 \end{align}
 
 Now let's consider a first-order (bigram) model. For $r=1$, $g(r)$ is already defined for each word type, by definition of a first-order model. So:
-\[p(w_{t+1} = w_{t}) =  \sum_v p(w_{t+1} = v \mid w_{t} = v) * p(w_{t} = v) \]
+\[p(w_{t+1} = w_{t}) =  \sum_v p(w_{t+1} = v \mid w_{t} = v)\]
 
 Now g(2):
 
-\[p(w_{t+2} = w_{t}) =  \sum_v p(w_{t+2} = v \mid w_{t} = v) * p(w_{t} = v) \label{e:sumv} \]
+\[p(w_{t+2} = w_{t}) =  \sum_v p(w_{t+2} = v \mid w_{t} = v) \label{e:sumv} \]
 
  The conditional probability $p(w_{t+2} = v , w_{t} = v)$ can be put into terms that are defined in the model as follows:
 
@@ -154,17 +150,17 @@ Now g(2):
 When we combine \ref{e:sumu} with \ref{e:sumv}, we get $g(2)$ under a first order model:
 
 
-\[ \sum_v [\sum_u p(w_{t+2} = v \mid w_{t+1} = u ) * p(w_{t+1} = u \mid w_{t} = v)] * p(w_{t} = v) \]
+\[ \sum_v [\sum_u p(w_{t+2} = v \mid w_{t+1} = u ) * p(w_{t+1} = u \mid w_{t} = v)]  \]
 
 Here, the gap between $w_t$ and $w_{t+2}$ has been 'bridged' by the non-specific token $u$ . By bridging this way twice, this expression can be extended to $r = 3$:
 
 
-\[ \sum_v [\sum_u [\sum_q [p(w_{t+3} = v \mid w_{t+2} = q ) * p(w_{t+2} = q \mid w_{t+1} = u)] p(w_{t+1} = u \mid w_{t} = v) ] p(w_{t} = v) \]
+\[ \sum_v [\sum_u [\sum_q [p(w_{t+3} = v \mid w_{t+2} = q ) * p(w_{t+2} = q \mid w_{t+1} = u)] p(w_{t+1} = u \mid w_{t} = v) ] ]\]
 
 and all other $r$ (with a slight change in notation):
 
 \begin{align} g(r) &= \sum_{v_0}[ \sum_{v_1} [ ... [ \sum_{v_{r-1}} [ p(w_{t+r} = v_0 \mid w_{t+r-1} = v_{r-1}) p(w_{t+r-1} = v_{r-1} \mid w_{t+r-2} = v_{r-2})] \\
-& * p(w_{t+r-2} = v_{r-2} \mid w_{t+r-3} = v_{r-3})] p(w_{t+r-3} = v_{r-3} \mid w_{t+r-4} = v_{r-4})] ... ] p(w_t = v_0) 
+& * p(w_{t+r-2} = v_{r-2} \mid w_{t+r-3} = v_{r-3})]... ] p(w_{t+1} = v_{1} \mid w_{t} = v_0)]
 \end{align}
 
 For clarification, here is g(r) for a first-order model represented in pseudocode.
@@ -181,7 +177,7 @@ $\indent \indent ...$
 
 $\indent \indent \indent for\ w_{r-1}\ in\ V:$
 
-$\indent \indent \indent \indent g(r)\ +=\ p(w_0) * p(w_1 \mid w_0) ... * p(w_r \mid w_{r-1}) * p(w_0 \mid w_{r-1})$
+$\indent \indent \indent \indent g(r)\ +=\  p(w_1 \mid w_0) ... * p(w_r \mid w_{r-1}) * p(w_0 \mid w_{r-1})$
 
 $return\ g(r)$
 \[\]
